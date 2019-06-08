@@ -19,17 +19,22 @@ def contact(request):
     else:
         form = ContactForm (request.POST)
         if form.is_valid ():
+          if auth(request) == 1 or auth(request)== 2 or auth(request)== 3 or auth(request)== 5 or auth(request)== 6  :
+             name = request.user.username
+             email = request.user.email
+             message =form.cleaned_data['message']
+          else :
             name = form.cleaned_data['name']
             email = form.cleaned_data['email']
             message = form.cleaned_data['message']
-            try:
-                send_mail (name, message, email, ['info@example.com'])  #يتم وضع ايميل الخاص بالاتصال بادارة الموقع
-            except BadHeaderError:
-                msg_er = 'Invalid header found.'  # رسالة في حالة وجود خطأ في الايميل
-                return render (request, "contact.html", {'msg_er': msg_er })
-            msg_ok ='تم ارسال رسالتك بنجاح... شكرا لك'
-            # رسالة في حالة تمت عملية الارسال بنجاح
-            return  render (request,"contact.html", {'msg_ok': msg_ok })
+        try:
+            send_mail (name, message, email, ['info@example.com'])  #يتم وضع ايميل الخاص بالاتصال بادارة الموقع
+        except BadHeaderError:
+            msg_er = 'Invalid header found.'  # رسالة في حالة وجود خطأ في الايميل
+            return render (request, "contact.html", {'msg_er': msg_er })
+        msg_ok ='تم ارسال رسالتك بنجاح... شكرا لك'
+        # رسالة في حالة تمت عملية الارسال بنجاح
+        return  render (request,"contact.html", {'msg_ok': msg_ok })
 
     return render (request, "contact.html", {'form': form })
 
@@ -48,4 +53,4 @@ def devteam(request):
 
 @requires_csrf_token
 def dashboard(request):
-    return render(request, 'dashboard.html')    
+    return render(request, 'dashboard.html')
